@@ -110,7 +110,7 @@ function fetchWeather(location) {
 
   // api url
   var requestURL =
-  `https://api.openweathermap.org/data/2.5/forecast?lat=${location.lat}&lon=${location.longi}&appid=${APIKey}&units=imperial`
+  `https://api.openweathermap.org/data/2.5/forecast?lat=${location.lat}&lon=${location.lon}&appid=${APIKey}&units=imperial`
 
   // fetch, using the api url, .then that returns the response as json, .then that calls renderItems(city, data)
   fetch(requestURL)
