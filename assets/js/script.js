@@ -2,13 +2,13 @@
 // search history as an empty array
 var searchHistory = "";
 // weather api root url
-var weatherAPIRootURL = "https://api.openweathermap.org/data/3.0/onecall";
 // api key
 var APIKey = "5b96b8fe04286fa15699ca8d32934665";
 
 // DOM element references
 // search form
 // search input
+var searchInput = $('#city-search-input')
 // container/section for today's weather
 var todaysWeatherEl = $("#todays-weather")
 // container/section for the forecast
@@ -107,43 +107,34 @@ function renderItems(city, data) {
 // Fetches weather data for given location from the Weather Geolocation
 // endpoint; then, calls functions to display current and forecast weather data.
 function fetchWeather(location) {
-  // varialbles of longitude, latitude, city name - coming from location
-  location = {
-    longitude: -81.3789,
-    latitude: 28.5384,
-    city: "Orlando",
-  };
 
   // api url
   var requestURL =
-  `https://api.openweathermap.org/data/2.5/forecast?lat=${location.latitude}&lon=${location.longitude}&appid=${APIKey}&units=imperial`
+  `https://api.openweathermap.org/data/2.5/forecast?lat=${location.lat}&lon=${location.longi}&appid=${APIKey}&units=imperial`
 
   // fetch, using the api url, .then that returns the response as json, .then that calls renderItems(city, data)
   fetch(requestURL)
     .then((response) => response.json())
-    .then((data) => renderItems(location.city, data));
+    .then((data) => renderItems(location.name, data));
 }
 
 function fetchCoords(search) {
+
+  // api url
+  var requestURL =
+  `http://api.openweathermap.org/geo/1.0/direct?q=${search}&appid=${APIKey}`
+
+  // fetch, using the api url, .then that returns the response as json, .then that calls renderItems(city, data)
+  fetch(requestURL)
+    .then((response) => response.json())
+    .then((data) => fetchWeather(data[0]));
+
   // variable for you api url
   // fetch with your url, .then that returns the response in json, .then that does 2 things - calls appendToHistory(search), calls fetchWeather(the data)
 }
 
-function handleSearchFormSubmit(e) {
-  // Don't continue if there is nothing in the search form
-  if (!searchInput.value) {
-    return;
-  }
-
-  e.preventDefault();
-  var search = searchInput.value.trim();
-  fetchCoords(search);
-  searchInput.value = "";
-}
-
 function handleSearchHistoryClick(e) {
   // grab whatever city is is they clicked
-
   fetchCoords(search);
 }
 
@@ -151,7 +142,14 @@ initSearchHistory();
 // click event to run the handleFormSubmit
 // click event to run the handleSearchHistoryClick
 
-$("#city-search-button").click(function(){
-    fetchWeather(null)
+$("#city-search-button").click(function() {
 
+    // Don't continue if there is nothing in the search form
+    if (!searchInput.val()) {
+        return;
+    }
+
+    var search = searchInput.val().trim();
+    fetchCoords(search);
+    searchInput.value = "";
 })
