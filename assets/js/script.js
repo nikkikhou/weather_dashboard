@@ -12,6 +12,7 @@ var APIKey = "5b96b8fe04286fa15699ca8d32934665";
 // container/section for today's weather
 var todaysWeatherEl = $("#todays-weather")
 // container/section for the forecast
+var weeklyForecastEl = $("#week-forecast")
 // search history container
 
 // Function to display the search history list.
@@ -47,22 +48,40 @@ function renderCurrentWeather(city, weather) {
   var temp = weather.main.temp
   var wind = weather.wind.speed
   var humidity = weather.main.humidity
-  var todaysDate = moment(weather.dt_txt).format("MMM DD, YYYY")
+  var todaysDate = moment(weather.dt_txt).format("M/D/YY")
 
   var cardBodyEl = todaysWeatherEl.find(".card-body")
   cardBodyEl.empty()
-  cardBodyEl.append(`<h2>${city} (${todaysDate}) </h2>`)
+  cardBodyEl.append(`<h2>${city} (${todaysDate}) <img src="http://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png" /></h2>`)
   cardBodyEl.append(`<p>Temp: ${temp}°F</p>`)
   cardBodyEl.append(`<p>Wind: ${wind} MPH</p>`)
   cardBodyEl.append(`<p>Humidity: ${humidity} %</p>`)
-
-  
-//   todaysWeatherEl.find(".temp").innerHTML = "poopy"
 }
 
 // Function to display a FORECAST card given an object (from our renderForecast function) from open weather api
 // daily forecast.
 function renderForecastCard(forecast) {
+
+    if(moment(forecast.dt_txt).hour() !== 12) {
+        return
+    }
+
+    var card = $(`<div class="card text-white bg-dark" style="max-width: 15%"><div class="card-body"></div></div>`)
+    var cardBodyEl = card.find(".card-body")
+
+    var temp = forecast.main.temp
+    var wind = forecast.wind.speed
+    var humidity = forecast.main.humidity
+    var todaysDate = moment(forecast.dt_txt).format("M/D/YY")
+  
+    cardBodyEl.append(`<h3>${todaysDate}</h3>`)
+    cardBodyEl.append(`<img src="http://openweathermap.org/img/wn/${forecast.weather[0].icon}@2x.png" />`)
+    cardBodyEl.append(`<p>Temp: ${temp}°F</p>`)
+    cardBodyEl.append(`<p>Wind: ${wind} MPH</p>`)
+    cardBodyEl.append(`<p>Humidity: ${humidity} %</p>`)
+
+    weeklyForecastEl.append(card)
+
   // variables for data from api
   // temp, windspeed, etc.
   // Create elements for a card
@@ -73,12 +92,7 @@ function renderForecastCard(forecast) {
 
 // Function to display 5 day forecast.
 function renderForecast(dailyForecast) {
-  // set up elements for this section
-
-  // append
-
-  // loop over dailyForecast
-
+    weeklyForecastEl.empty()
   for (var i = 0; i < dailyForecast.length; i++) {
     // send the data to our renderForecast function as an argument
     renderForecastCard(dailyForecast[i]);
