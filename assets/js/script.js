@@ -122,7 +122,7 @@ function fetchCoords(search) {
 
   // api url
   var requestURL =
-  `http://api.openweathermap.org/geo/1.0/direct?q=${search}&appid=${APIKey}`
+  `https://api.openweathermap.org/geo/1.0/direct?q=${search}&appid=${APIKey}`
 
   // fetch, using the api url, .then that returns the response as json, .then that calls renderItems(city, data)
   fetch(requestURL)
