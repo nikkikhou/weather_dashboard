@@ -1,53 +1,48 @@
 // Global variables
 // search history as an empty array
 var searchHistory = [];
-// weather api root url
 // api key
 var APIKey = "5b96b8fe04286fa15699ca8d32934665";
 
 // DOM element references
-// search form
 var searchformEl = $("#search-form");
-// search input
 var searchInput = $("#city-search-input");
-// container/section for today's weather
 var todaysWeatherEl = $("#todays-weather");
-// container/section for the forecast
 var weeklyForecastEl = $("#week-forecast");
-// search history container
 var searchHistoryEl = $("#search-history");
 
 // Function to display the search history list.
 function renderSearchHistory() {
   // empty the search history container
-  searchHistoryEl.empty()
+  searchHistoryEl.empty();
   // loop through the history array creating a button for each item
-  for (var index = 0; index < searchHistory.length; index++) {
-    var buttonEl = $(`<button class="btn btn-secondary w-100 my-2">${searchHistory[index]}</button>`)
-    searchHistoryEl.append(buttonEl)
+  for (let index = 0; index < searchHistory.length; index++) {
+    var buttonEl = $(
+      `<button class="btn btn-secondary w-100 my-2">${searchHistory[index]}</button>`
+    );
+    searchHistoryEl.append(buttonEl);
+    buttonEl.click(function () {
+      fetchCoords(searchHistory[index]);
+    });
   }
-  
-  // append to the search history container
-  
 }
 
 // Function to update history in local storage then updates displayed history.
 function appendToHistory(search) {
   // push search term into search history array
-searchHistory.push(search)
+  searchHistory.push(search);
   // set search history array to local storage
-  localStorage.setItem("search-history", JSON.stringify(searchHistory)) 
+  localStorage.setItem("search-history", JSON.stringify(searchHistory));
   renderSearchHistory();
 }
 
 // Function to get search history from local storage
 function initSearchHistory() {
   // get search history item from local storage
-searchHistory = JSON.parse(localStorage.getItem("search-history"))
-if (!searchHistory) {
-  searchHistory = []
-  
-}
+  searchHistory = JSON.parse(localStorage.getItem("search-history"));
+  if (!searchHistory) {
+    searchHistory = [];
+  }
   // set search history array equal to what you got from local storage
   renderSearchHistory();
 }
@@ -133,22 +128,12 @@ function fetchCoords(search) {
     .then((response) => response.json())
     .then((data) => {
       // call search function
-      appendToHistory(search)
+      appendToHistory(search);
       fetchWeather(data[0]);
     });
-
-  // variable for you api url
-  // fetch with your url, .then that returns the response in json, .then that does 2 things - calls appendToHistory(search), calls fetchWeather(the data)
-}
-
-function handleSearchHistoryClick(e) {
-  // grab whatever city is is they clicked
-  fetchCoords(search);
 }
 
 initSearchHistory();
-// click event to run the handleFormSubmit
-// click event to run the handleSearchHistoryClick
 
 $("#city-search-button").click(function () {
   // Don't continue if there is nothing in the search form
@@ -160,5 +145,3 @@ $("#city-search-button").click(function () {
   fetchCoords(search);
   searchInput.value = "";
 });
-
-
